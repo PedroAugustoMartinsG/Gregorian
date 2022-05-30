@@ -33,6 +33,7 @@ void pega_pal();
 void checa_pal();
 void testa_pal();
 void salva_pal();
+void salva_jogo();
 
 char palavra[5], tentativa[5];
 //Palavra sorteada é definida globalmente para permitir a manipulação por todas as funções sem necessitar de abstrações mais pesadas.
@@ -55,7 +56,7 @@ int main (){
 
         if (palavra_valida == 1){
             testa_pal();
-            printf("A palavra é válida");
+            //printf("A palavra é válida");
             return 0;
         }
 
@@ -80,6 +81,11 @@ void sorteia_pal(){
 
     lista = fopen("lista.txt", "r");
 
+    if (lista == NULL){
+        printf("Arquivos essenciais do jogo não foram encontrados");
+        
+    }
+
     srand(time(NULL));
 
     linha = rand() % 14;
@@ -95,9 +101,15 @@ void sorteia_pal(){
 }
 
 void pega_pal(){
-    printf("Digite a sua tentativa\n");
 
-    scanf("%s", tentativa);
+    do{
+        printf("Digite a sua tentativa\n");
+
+        scanf("%s", tentativa);
+
+    }while(strlen(tentativa) != 5);
+    //Parte do código que testa se a tentativa tem 5 caracteres, seria interessante refatorar para deixar claro o erro. Função protótipo.
+    
 }
 
 void checa_pal(int *validador){
@@ -107,11 +119,17 @@ char compara[5];
 
 listab = fopen("listab.txt", "r");
 
+ if (listab == NULL){
+        printf("Arquivos essenciais do jogo não foram encontrados.");
+    }
+
 do{
     fscanf(listab, "%s", compara);
 
-    if (compara == palavra){
-        printf("Você digitou uma palavra que não existe! Digite outra");
+    printf("Comparando %s com %s", tentativa, compara);
+
+    if (strcmp(tentativa, palavra)== 1){
+        printf("\nVocê digitou uma palavra que não existe! Digite outra");
     }
     else
     *validador = 1;
