@@ -3,7 +3,7 @@
 #include <string.h>
 #include <time.h>
 #include <locale.h>
-//#include "biblioteca.h"
+#include <ctype.h>
 
 
 /*
@@ -102,13 +102,29 @@ void sorteia_pal(){
 
 void pega_pal(){
 
+    int pega_digito;
+    const char proibido[] = "012345789/*-+,!@#$&*()_?~}]{[";
+
     do{
         printf("Digite a sua tentativa\n");
+        pega_digito = 0;
 
         scanf("%s", tentativa);
 
-    }while(strlen(tentativa) != 5);
-    //Parte do código que testa se a tentativa tem 5 caracteres, seria interessante refatorar para deixar claro o erro. Função protótipo.
+
+         
+        if (strpbrk(proibido,tentativa) != 0){
+            pega_digito = 1;
+        }
+
+
+
+    }while(strlen(tentativa) != 5 || pega_digito == 1);
+    //Parte do código que testa se a tentativa tem 5 caracteres ou se tem número, seria interessante refatorar para deixar claro o erro. Função protótipo.
+
+    
+
+
     
 }
 
