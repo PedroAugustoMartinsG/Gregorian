@@ -51,15 +51,8 @@ int main (){
         //printf("Bem vindo ao jogo das palavras, nesse jogo você deve acertar a palavra de 5 letras escolhida pelo programa");
         sorteia_pal();
         pega_pal();
-        checa_pal(&palavra_valida);
-
-
-        if (palavra_valida == 1){
-            testa_pal();
-            //printf("A palavra é válida");
-            return 0;
-        }
-
+        printf("Tentativa passou pelas checagens.");
+        return 0;
 
         rodada--;
     }
@@ -93,6 +86,7 @@ void sorteia_pal(){
 
     for (int i = 0; i <= linha; i++){
         fscanf(lista, "%s", palavra);
+        //printf("palavra selecionada foi %s", palavra);
     }
 
     // Teste para verificar se o sorteio ta funfando printf("\nA linha selecionada foi %d e a palavra foi %s", linha, palavra);
@@ -101,34 +95,29 @@ void sorteia_pal(){
 }
 
 void pega_pal(){
-
-    int pega_digito;
+    
+    int pega_erro;
     const char proibido[] = "012345789/*-+,!@#$&*()_?~}]{[";
 
     do{
-        printf("Digite a sua tentativa\n");
-        pega_digito = 0;
+        printf("Digite a sua tentativa válida\n");
+        pega_erro = 0;
 
         scanf("%s", tentativa);
-
+        checa_pal(&pega_erro);
 
          
-        if (strpbrk(proibido,tentativa) != 0){
-            pega_digito = 1;
+        if (strpbrk(proibido,tentativa) != 0 || strlen(tentativa) != 5){
+            pega_erro = 1;
+            printf("Detecada uma palavra inválida, tente novamente.\n");
         }
 
-
-
-    }while(strlen(tentativa) != 5 || pega_digito == 1);
+    }while(pega_erro == 1);
     //Parte do código que testa se a tentativa tem 5 caracteres ou se tem número, seria interessante refatorar para deixar claro o erro. Função protótipo.
-
-    
-
-
     
 }
 
-void checa_pal(int *validador){
+void checa_pal(int *passa_erro){
 
 FILE *listab;
 char compara[5];
@@ -142,13 +131,14 @@ listab = fopen("listab.txt", "r");
 do{
     fscanf(listab, "%s", compara);
 
-    printf("Comparando %s com %s", tentativa, compara);
+    //printf("Comparando %s com %s\n", tentativa, compara);
 
-    if (strcmp(tentativa, palavra)== 1){
-        printf("\nVocê digitou uma palavra que não existe! Digite outra");
+    if (strcmp(tentativa,compara)== 0){
+        printf("Detecada uma palavra inválida, tente novamente.\n");
+        *passa_erro = 1;
     }
     else
-    *validador = 1;
+    *passa_erro = 0;
     //Permite o jogo continuar.
     
 }while(feof(listab)== 0);
