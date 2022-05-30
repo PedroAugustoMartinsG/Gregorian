@@ -51,6 +51,7 @@ int main (){
         //printf("Bem vindo ao jogo das palavras, nesse jogo você deve acertar a palavra de 5 letras escolhida pelo programa");
         sorteia_pal();
         pega_pal();
+        salva_pal();
         printf("Tentativa passou pelas checagens.");
         return 0;
 
@@ -148,5 +149,18 @@ fclose(listab);
 }
 
 void testa_pal(){
+
+}
+
+void salva_pal(){
+    FILE *arquivo;
+
+    arquivo = fopen("salvos.txt", "a");
+
+    fseek(arquivo, 0,SEEK_END);
+
+    fprintf(arquivo,"%s", palavra);
+
+    // Aqui precisamos determinar quantas palavras repetidas nós vamos salvar.
 
 }
