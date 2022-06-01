@@ -1,0 +1,10 @@
+void reiniciar_jogo() // Por ora só vai esvaziar o backup, mas no futuro pode servir como restart
+{
+    FILE *arquivo;
+    arquivo = fopen("backup.txt", "w");
+    if (arquivo == NULL)
+    {
+        printf("Erro na abertura do arquivo!");
+    }
+    fclose(arquivo);
+}
