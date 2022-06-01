@@ -28,7 +28,7 @@ checa_pal: Checa se a tentativa do usuário é válida dentro dos parâmetros do
 testa_pal: Testa a correspondência da palavra sorteada com a digitada.
 salva_pal: Salva palavra sorteada em uma lista de palavras para futura checagem na sorteia_pal.
 salva_jogo: Salva o estado do jogo em um arquivo externo.
-reiniciar_jogo: Reinicia as variáveis e arqiovos externos.
+reiniciar_jogo: Reinicia as variáveis e arquivos externos.
 */
 
 void sorteia_pal();
