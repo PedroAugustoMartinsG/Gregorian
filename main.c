@@ -27,7 +27,7 @@ Funções:
 sorteia_pal: Sorteia uma palavra da lista;
 pega_pal: Ele scaneia o STDIN para pegar a palavra que o usuário digitou e armazenará no char palavra;
 checa_pal: Checa se a tentativa do usuário é válida dentro dos parâmetros do jogo;
-testa_pal: Testa a correspondência da palavra sorteada com a digitada;
+testa_pal: Testa a correspondência da palavra sorteada com a digitada, e armazena os acertos e erros no backup.txt;
 salva_pal: Salva palavra sorteada em uma lista de palavras para futura checagem na sorteia_pal;
 salva_jogo: Salva o estado do jogo em um arquivo externo;
 reiniciar_jogo: Reinicia as variáveis e arquivos externos.
@@ -168,36 +168,43 @@ fclose(listab);
 
 void testa_pal(int *acertos)
 {
-    char erros[5] = {" ", " ", " ", " ", " "}; // inicializar os possíveis erros
+    char erros[5] = {' ', ' ', ' ', ' ', ' '};  // inicializar os possíveis erros da rodada (importante para ter índices futuros)
+    char certos[5] = {' ', ' ', ' ', ' ', ' '}; // inicializar os possíveis acertos da rodada (importante para ter índices futuros)
     for (int i = 0; i < 5; i++)
     {
         if (tentativa[i] == palavra[i])
         {
             letras[i] = tentativa[i];
+            certos[i] = tentativa[i];
             *acertos++;
             // printf("\nVocê acertou a letra %c da palavra %s", tentativa[i], palavra); //Aqui pode colocar uma corzinha marota
         }
         else
         {
             erros[i] = tentativa[i];
-            // salva_jogo(tentativa[i], 1). Salvar os erros na 4° linha
         }
     }
     if (*acertos == 5)
     {
-        // ganhou. Podia aparecer uma pop up lindona dando parabens.
+        // Podia aparecer uma pop up lindona dando parabens.
     }
     else
     {
         // perdeu. Vai salvar os erros no arquivo backup
         for (int i = 0; i < 5; i++)
         {
-            if (erros[i] != " ")
-                salva_jogo(erros[i], 0);
+            if (erros[i] != ' ')
+                salva_jogo(erros[i]);
         }
-        salva_jogo("\n", 0); // pular linha
+        salva_jogo("\n"); // pular linha
     }
-    *acertos = 0; // zerar a variavel
+    // Vai salvar os acertos da rodada no arquivo backup
+    for (int i = 0; i < 5; i++)
+    {
+        if (certos[i] != ' ')
+            salva_jogo(certos[i]);
+    }
+    salva_jogo("\n"); // pular linha
 }
 
 void salva_pal(){
@@ -217,25 +224,18 @@ void reiniciar_jogo() // Por ora só vai esvaziar o backup, mas no futuro pode s
     fclose(arquivo);
 }
 
-void salva_jogo(char termo[5], int mesmaLinha) // será passado os termos a serem salvos, a posição do ponteiro e se deseja pular linha
+void salva_jogo(char termo[5]) // será passado os termos a serem salvos
 {
     FILE *arquivo; // cria variável ponteiro para o arquivo
-
     // abrindo o arquivo com tipo de abertura a
-
-    arquivo = fopen("backup.txt", "a"); //salvos.txt é do jay pi
+    arquivo = fopen("backup.txt", "a"); // salvos.txt é do jay pi
     // testando se o arquivo foi realmente criado
     if (arquivo == NULL)
     {
         printf("Erro na abertura do arquivo!");
     }
-
     // usando fprintf para armazenar a string no arquivo
-    if (mesmaLinha == 0)
-        fprintf(arquivo, "%s \n", termo);
-    else
-        fprintf(arquivo, "%s ", termo);
-
+    fprintf(arquivo, "%s ", termo);
     // usando fclose para fechar o arquivo
     fclose(arquivo);
 }
