@@ -12,22 +12,24 @@ Documentação do jogo
 Regras de utilização de nomenclatura da main.
 
 Variáveis:
-char palavra: é a variável que vai armazenar a palavra sorteada.
-int rodada: indica quantas tentativas a pessoa ainda tem ao final da tentativa corrente
+char palavra: é a variável que vai armazenar a palavra sorteada;
+int rodada: indica quantas tentativas a pessoa ainda tem ao final da tentativa corrente.
 
 Arquivos:
-lista.txt: É o arquivo com a lista de palavras para sorteio - UTILIZADO O PONTEIRO LISTA
-listab.txt: É o arquivo com as palavras bloqueadas.
+lista.txt: É o arquivo com a lista de palavras para sorteio - UTILIZADO O PONTEIRO LISTA;
+listab.txt: É o arquivo com as palavras bloqueadas;
+salvos.txt: É o arquivo com as palavras sorteadas;
+backup.txt: É o arquivo com o histórico do jogo.
 
 
 Funções:
 
-sorteia_pal: Sorteia uma palavra da lista.
-pega_pal: Ele scaneia o STDIN para pegar a palavra que o usuário digitou e armazenará no char palavra.
-checa_pal: Checa se a tentativa do usuário é válida dentro dos parâmetros do jogo
-testa_pal: Testa a correspondência da palavra sorteada com a digitada.
-salva_pal: Salva palavra sorteada em uma lista de palavras para futura checagem na sorteia_pal.
-salva_jogo: Salva o estado do jogo em um arquivo externo.
+sorteia_pal: Sorteia uma palavra da lista;
+pega_pal: Ele scaneia o STDIN para pegar a palavra que o usuário digitou e armazenará no char palavra;
+checa_pal: Checa se a tentativa do usuário é válida dentro dos parâmetros do jogo;
+testa_pal: Testa a correspondência da palavra sorteada com a digitada;
+salva_pal: Salva palavra sorteada em uma lista de palavras para futura checagem na sorteia_pal;
+salva_jogo: Salva o estado do jogo em um arquivo externo;
 reiniciar_jogo: Reinicia as variáveis e arquivos externos.
 */
 
