@@ -166,20 +166,38 @@ fclose(listab);
 
 }
 
-void testa_pal( int *acertos){
-//Essa função testa se a tentativa do usuário bate com a palavra sorteada
-
-//Lucas começou a fazer o esboço e não terminou. 
-
-    for (int i = 0; i < 5; i++){
-        if (tentativa[i] == palavra[i]){
+void testa_pal(int *acertos)
+{
+    char erros[5] = {" ", " ", " ", " ", " "}; // inicializar os possíveis erros
+    for (int i = 0; i < 5; i++)
+    {
+        if (tentativa[i] == palavra[i])
+        {
+            letras[i] = tentativa[i];
             *acertos++;
-            printf("\nVocê acertou a letra %c da palavra %s", tentativa[i], palavra);
+            // printf("\nVocê acertou a letra %c da palavra %s", tentativa[i], palavra); //Aqui pode colocar uma corzinha marota
         }
         else
-        break;
+        {
+            erros[i] = tentativa[i];
+            // salva_jogo(tentativa[i], 1). Salvar os erros na 4° linha
+        }
     }
-
+    if (*acertos == 5)
+    {
+        // ganhou. Podia aparecer uma pop up lindona dando parabens.
+    }
+    else
+    {
+        // perdeu. Vai salvar os erros no arquivo backup
+        for (int i = 0; i < 5; i++)
+        {
+            if (erros[i] != " ")
+                salva_jogo(erros[i], 0);
+        }
+        salva_jogo("\n", 0); // pular linha
+    }
+    *acertos = 0; // zerar a variavel
 }
 
 void salva_pal(){
@@ -199,7 +217,7 @@ void reiniciar_jogo() // Por ora só vai esvaziar o backup, mas no futuro pode s
     fclose(arquivo);
 }
 
-void salva_jogo(char termo[5], int mesmaLinha) // será passado os termos a serem salvos
+void salva_jogo(char termo[5], int mesmaLinha) // será passado os termos a serem salvos, a posição do ponteiro e se deseja pular linha
 {
     FILE *arquivo; // cria variável ponteiro para o arquivo
 
