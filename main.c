@@ -24,8 +24,10 @@ Funções:
 
 sorteia_pal: Sorteia uma palavra da lista.
 pega_pal: Ele scaneia o STDIN para pegar a palavra que o usuário digitou e armazenará no char palavra.
-checa_pal: Checa se a palavra da lista não está na lista bloqueada.
+checa_pal: Checa se a tentativa do usuário é válida dentro dos parâmetros do jogo
 testa_pal: Testa a correspondência da palavra sorteada com a digitada.
+salva_pal: Salva palavra sorteada em uma lista de palavras para futura checagem na sorteia_pal.
+salva_jogo: Salva o estado do jogo em um arquivo externo.
 */
 
 void sorteia_pal();
@@ -35,8 +37,11 @@ void testa_pal();
 void salva_pal();
 void salva_jogo();
 
-char palavra[5], tentativa[5];
+char palavra[5], tentativa[5], letras[5];
 //Palavra sorteada é definida globalmente para permitir a manipulação por todas as funções sem necessitar de abstrações mais pesadas.
+//Palavra: Palavra sorteada pelo joogo.
+//Tentativa: tentativa do usuário de acertar a palavra.
+//Letras: Letras que o usuário acertou da palavra.
 
 int main (){
     
@@ -45,6 +50,7 @@ int main (){
     FILE  *sorteadas;
 
     int rodada = 5, palavra_valida = 0;
+    int acertos = 0;
 
     while (rodada >= 0){
 
@@ -52,7 +58,11 @@ int main (){
         sorteia_pal();
         pega_pal();
         salva_pal();
+
+        //Printf de debug para verificar se as checagens estão funcionando.
         printf("Tentativa passou pelas checagens.");
+
+        testa_pal(&acertos);
         return 0;
 
         rodada--;
@@ -68,8 +78,9 @@ Aqui começa a manipulação das funções do arquivo
 
 void sorteia_pal(){
 
+//Essa função vai sortear uma palavra aleatória da lista
+
     int linha;
-    // Vai sortear um número e ir direto para a palavra daquela linha usando fseek()
 
     FILE *lista;
 
@@ -87,7 +98,7 @@ void sorteia_pal(){
 
     for (int i = 0; i <= linha; i++){
         fscanf(lista, "%s", palavra);
-        //printf("palavra selecionada foi %s", palavra);
+        printf("\npalavra selecionada foi %s", palavra);
     }
 
     // Teste para verificar se o sorteio ta funfando printf("\nA linha selecionada foi %d e a palavra foi %s", linha, palavra);
@@ -97,6 +108,8 @@ void sorteia_pal(){
 
 void pega_pal(){
     
+    //Essa função pega a tentativa do usuário e verifica se ela está válida.
+
     int pega_erro;
     const char proibido[] = "012345789/*-+,!@#$&*()_?~}]{[";
 
@@ -119,6 +132,8 @@ void pega_pal(){
 }
 
 void checa_pal(int *passa_erro){
+
+//Essa função checa se a palavra sorteada está de acordo com as especificações da mecânica de jogo.
 
 FILE *listab;
 char compara[5];
@@ -148,19 +163,28 @@ fclose(listab);
 
 }
 
-void testa_pal(){
+void testa_pal( int *acertos){
+//Essa função testa se a tentativa do usuário bate com a palavra sorteada
+
+//Lucas começou a fazer o esboço e não terminou. 
+
+    for (int i = 0; i < 5; i++){
+        if (tentativa[i] == palavra[i]){
+            *acertos++;
+            printf("\nVocê acertou a letra %c da palavra %s", tentativa[i], palavra);
+        }
+        else
+        break;
+    }
 
 }
 
 void salva_pal(){
-    FILE *arquivo;
+    // Essa função deve salvar palavras sorteadas em um arquivo.txt para futura checagem no sorteia_pal()
+    
 
-    arquivo = fopen("salvos.txt", "a");
+}
 
-    fseek(arquivo, 0,SEEK_END);
-
-    fprintf(arquivo,"%s", palavra);
-
-    // Aqui precisamos determinar quantas palavras repetidas nós vamos salvar.
-
+void salva_jogo(){
+    //Essa função deve salvar a rodada atual em um arquivo para futura leitura.
 }
