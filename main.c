@@ -186,7 +186,7 @@ void testa_pal(int *acertos)
     }
     if (*acertos == 5)
     {
-        // Podia aparecer uma pop up lindona dando parabens.
+        // Podia aparecer uma pop up lindona dando parabens
     }
     else
     {
