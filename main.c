@@ -185,6 +185,36 @@ void salva_pal(){
 
 }
 
-void salva_jogo(){
-    //Essa função deve salvar a rodada atual em um arquivo para futura leitura.
+void reiniciar_jogo() // Por ora só vai esvaziar o backup, mas no futuro pode servir como restart
+{
+    FILE *arquivo;
+    arquivo = fopen("backup.txt", "w");
+    if (arquivo == NULL)
+    {
+        printf("Erro na abertura do arquivo!");
+    }
+    fclose(arquivo);
+}
+
+void salva_jogo(char termo[5], int mesmaLinha) // será passado os termos a serem salvos
+{
+    FILE *arquivo; // cria variável ponteiro para o arquivo
+
+    // abrindo o arquivo com tipo de abertura a
+
+    arquivo = fopen("backup.txt", "a"); //salvos.txt é do jay pi
+    // testando se o arquivo foi realmente criado
+    if (arquivo == NULL)
+    {
+        printf("Erro na abertura do arquivo!");
+    }
+
+    // usando fprintf para armazenar a string no arquivo
+    if (mesmaLinha == 0)
+        fprintf(arquivo, "%s \n", termo);
+    else
+        fprintf(arquivo, "%s ", termo);
+
+    // usando fclose para fechar o arquivo
+    fclose(arquivo);
 }
