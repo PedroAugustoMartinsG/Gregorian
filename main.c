@@ -54,7 +54,7 @@ int main()
     int rodada = 0, status = 1;
     while (status == 1)
     {
-        reiniciar_jogo(&rodada); // zerar variaveis rodada e acertos
+        reiniciar_jogo(&rodada); // zerar variaveis rodada 
         sorteia_pal();
         salva_pal();
         salva_jogo(palavra, 2);
