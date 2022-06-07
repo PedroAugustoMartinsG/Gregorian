@@ -15,34 +15,33 @@ char palavra: é a variável que vai armazenar a palavra sorteada;
 int rodada: indica quantas tentativas a pessoa ainda tem ao final da tentativa corrente.
 
 Arquivos:
-lista.txt: É o arquivo com a lista de palavras para sorteio - UTILIZADO O PONTEIRO LISTA;
+lista.txt: É o arquivo com a lista de palavras para sorteio ?? utilizado o ponteiro lista;
 listab.txt: É o arquivo com as palavras bloqueadas;
 salvos.txt: É o arquivo com as palavras sorteadas;
 backup.txt: É o arquivo com o histórico do jogo.
 
-
 Funções:
-
-sorteia_pal: Sorteia uma palavra da lista;
-pega_pal: Ele scaneia o STDIN para pegar a palavra que o usuário digitou e armazenará no char palavra;
 checa_pal: Checa se a tentativa do usuário é válida dentro dos parâmetros do jogo;
-testa_pal: Testa a correspondência da palavra sorteada com a digitada, e armazena os acertos e erros no backup.txt;
+pega_pal: Escanea o STDIN para pegar a palavra que o usuário digitou e armazenará no char palavra;
+reiniciar_jogo: Reinicia as variáveis e arquivos externos;
+salvaChar_jogo: Salva o estado do jogo em um arquivo externo no tipo char;
+salvaInt_jogo: Salva o estado do jogo em um arquivo no tipo int;
 salva_pal: Salva palavra sorteada em uma lista de palavras para futura checagem na sorteia_pal;
-salva_jogo: Salva o estado do jogo em um arquivo externo;
-reiniciar_jogo: Reinicia as variáveis e arquivos externos.
+sorteia_pal: Sorteia uma palavra da lista;
+testa_pal: Testa a correspondência da palavra sorteada com a digitada, e armazena os acertos e erros no backup.txt.
 */
 
 void checa_pal();
 void pega_pal();
-void testa_pal();
 void reiniciar_jogo();
 void salvaChar_jogo();
 void salvaInt_jogo();
 void salva_pal();
 void sorteia_pal();
+void testa_pal();
 
 char palavra[6], tentativa[6], letras[6]; // Tentativa precisa de um espaço a mais da quantidade de letras
-int acertos;                              // muitas funções a usam, interessante ficar global. Acertos por rodada!
+int acertos;                              // Muitas funções a usam, interessante ficar global. Acertos por rodada!
 
 // Palavra sorteada e acertos são definidos globalmente para permitir a manipulação por todas as funções sem necessitar de abstrações mais pesadas.
 // Palavra: palavra sorteada pelo jogo.
@@ -54,7 +53,7 @@ int main()
 {
     setlocale(LC_ALL, "Portuguese");
     int rodada = 0, status = 1;
-    FILE *file = fopen("salvos.txt", "w"); // Para limpar o conteúdo de backup.txt
+    FILE *file = fopen("salvos.txt", "w"); // Limpar o conteúdo de salvos.txt
     fclose(file);
     while (status == 1)
     {
@@ -67,15 +66,15 @@ int main()
             salvaInt_jogo(rodada);
             pega_pal();
             testa_pal();
-            printf("Acertos: %d/5\n", acertos);
-            if (acertos == 5 && strcmp(tentativa, palavra) == 0) // Tem que verificar se não são anagramas
+            printf("Acertos totais: %d\n", acertos);
+            if (strcmp(tentativa, palavra) == 0) // Verificar se não são anagramas
             {
                 // Podia aparecer uma pop up lindona dando parabéns por ter ganhado
                 break;
             }
             rodada++;
         }
-        // Fim do game
+        // Fim da rotina
         printf("Digite 1 se deseja jogar novamente...");
         scanf("%i", &status);
     }
@@ -86,12 +85,12 @@ void reiniciar_jogo(int *v1) // Vai zerar as variáveis acertos, letras e rodada
 {
     // Reiniciar variáveis
     acertos = 0;
-    for (int i = 0; i < 5; i++) // Seria bom refatorar esta parta
+    *v1 = 0;                    // Zerar a variavel rodada
+    for (int i = 0; i < 5; i++) // Seria bom refatorar esta parte
     {
         letras[i] = ' ';
     }
     letras[5] = '\0';
-    *v1 = 0; // Zerar a variavel rodada
 }
 
 void sorteia_pal() // Vai sortear uma palavra aleatória da lista
@@ -100,29 +99,28 @@ void sorteia_pal() // Vai sortear uma palavra aleatória da lista
     char compara[6];
     FILE *lista;
     FILE *lista_salvos;
-    if (lista == NULL)
-    {
-        printf("Arquivos essenciais do jogo não foram encontrados");
-    }
     while (flag == 0)
     {
         lista = fopen("lista.txt", "r");
         lista_salvos = fopen("salvos.txt", "a+");
+        if (lista == NULL || lista_salvos == NULL)
+        {
+            printf("Arquivos essenciais do jogo não foram encontrados");
+            exit(1);
+        }
         flag = 1;
         srand(time(NULL));
         linha = rand() % 14;
         for (int i = 0; i <= linha; i++)
         {
             fscanf(lista, "%s", palavra);
-            if (i == linha) // para aparecer somenta a resposta certa
-                printf("\npalavra selecionada foi %s\n", palavra);
         }
         while (feof(lista_salvos) == 0)
         {
             fscanf(lista_salvos, "%s", compara);
             if (strcmp(palavra, compara) == 0)
             {
-                printf("Detectada uma palavra repetida.\n");
+                // printf("Detectada uma palavra repetida.\n");
                 flag = 0;
                 break;
             }
@@ -130,12 +128,12 @@ void sorteia_pal() // Vai sortear uma palavra aleatória da lista
         fclose(lista);
         fclose(lista_salvos);
     }
-    // Teste para verificar se o sorteio ta funfando printf("\nA linha selecionada foi %d e a palavra foi %s", linha, palavra);
+    printf("\nPalavra selecionada foi: %s\n", palavra);
+    //  Teste para verificar se o sorteio ta funfando printf("\nA linha selecionada foi %d e a palavra foi %s", linha, palavra);
 }
 
 void salva_pal() // Vai salvar as palavras-respostas num arquivo
 {
-    // Salvando a palavra em um arquivo
     FILE *arq;
     FILE *arquivo;
     FILE *arq_backup;
@@ -147,19 +145,23 @@ void salva_pal() // Vai salvar as palavras-respostas num arquivo
     // Apagando o arquivo quando apresenta 30 palavras
     if (arq)
     {
-        for (int a = 0; a < 30; a++)
+        for (int a = 0; feof(arq) == 0; a++)
         {
             fscanf(arq, "%s", teste[a]);
             quantidade = quantidade + strlen(teste[a]);
         }
         fclose(arq);
-
-        if (quantidade >= 150)
+        if (quantidade >= 50) // 10 palavras
+        {
             arq = fopen("salvos.txt", "w");
-        fclose(arq);
+            fclose(arq);
+        }
     }
     else
-        printf("erro ao abrir o arquivo\n");
+    {
+        printf("Erro ao abrir o arquivo salvos.txt\n");
+        exit(1);
+    }
     // printf("\n\n\ quantidade %d\n",quantidade);
     if (arquivo)
     {
@@ -167,15 +169,21 @@ void salva_pal() // Vai salvar as palavras-respostas num arquivo
         fclose(arquivo);
     }
     else
-        printf("erro 2 ao abrir o arquivo\n");
-    // Colocando a palavra-resposta na primeira linha do backup
+    {
+        printf("Erro ao abrir o arquivo salvos.txt\n");
+        exit(1);
+    }
+    // Colocando a palavra-resposta na primeira linha do backup.txt
     if (arq_backup)
     {
         fprintf(arq_backup, "%s\n", palavra);
         fclose(arq_backup);
     }
     else
-        printf("erro 3 ao abrir o arquivo\n");
+    {
+        printf("Erro ao abrir o arquivo backup.txt\n");
+        exit(1);
+    }
 }
 
 void salvaInt_jogo(int termo) // Vai passar o int a ser salvo
@@ -185,6 +193,7 @@ void salvaInt_jogo(int termo) // Vai passar o int a ser salvo
     if (arquivo == NULL)
     {
         printf("Erro na abertura do arquivo!");
+        exit(1);
     }
     fprintf(arquivo, "%i\n", termo);
     fclose(arquivo);
@@ -197,10 +206,11 @@ void salvaChar_jogo(char *termo) // Vai passar o vetor de char a ser salvo
     if (arquivo == NULL)
     {
         printf("Erro na abertura do arquivo!");
+        exit(1);
     }
     for (int i = 0; i < 5; i++)
     {
-        if (termo[i] != ' ') // Para nao imprimir espaços vazios
+        if (termo[i] != ' ') // Para não imprimir espaços vazios
             fprintf(arquivo, "%c\n", termo[i]);
     }
     fclose(arquivo);
@@ -212,11 +222,11 @@ void pega_pal() // Vai pegar a tentativa do usuário e, verificar se ela está v
     const char proibido[] = "012345789/-+,!@#$&()_?~}]{[";
     do
     {
-        printf("\nDigite a sua tentativa válida\n");
         pega_erro = 0;
+        printf("\nDigite a sua tentativa válida\n");
         scanf("%s", tentativa);
         checa_pal(&pega_erro);
-        if (strpbrk(proibido, tentativa) != 0 || strlen(tentativa) != 5 || pega_erro == 1) // Deve, antes de entrar na chega_pal, verificar se tentativa tem 5 letras
+        if (strpbrk(proibido, tentativa) != 0 || strlen(tentativa) != 5 || pega_erro == 1) // Condição de erros
         {
             pega_erro = 1;
             printf("Detectada uma palavra inválida, tente novamente.\n");
@@ -227,21 +237,29 @@ void pega_pal() // Vai pegar a tentativa do usuário e, verificar se ela está v
 
 void checa_pal(int *passa_erro) // Vai checar se o palpite está de acordo com as especificações da mecânica de jogo
 {
-    // Só funciona se, e somente se, o palpite tiver somente 5 letras
     FILE *listab;
-    char compara[6];
+    char compara[6], tentativaUpperCase[6];
     listab = fopen("listab.txt", "r");
     if (listab == NULL)
     {
         printf("Arquivos essenciais do jogo não foram encontrados.");
+        exit(1);
     }
+    // Converter em letras maiúsculas
+    int i = 0;
+    while (tentativa[i] != '\0')
+    {
+        tentativaUpperCase[i] = toupper(tentativa[i]);
+        i++;
+    }
+    tentativaUpperCase[i] = '\0'; // Indicar o fim da string
     while (feof(listab) == 0)
     {
         fscanf(listab, "%s", compara);
-        // printf("Comparando %s com %s\n", tentativa, compara);
-        if (strcmp(tentativa, compara) == 0)
+        //printf("Comparando %s com %s\n", tentativaUpperCase, compara); // Comparar em letras maiúsculas
+        if (strcmp(tentativaUpperCase, compara) == 0)
         {
-            printf("Detectada uma palavra inválida, tente novamente.\n");
+            //printf("Detectada uma palavra inválida, tente novamente.\n");
             *passa_erro = 1;
             break;
         }
@@ -252,11 +270,11 @@ void checa_pal(int *passa_erro) // Vai checar se o palpite está de acordo com a
     fclose(listab);
 }
 
-void testa_pal() // Vai verificar a quantidade de acertos do palpite
+void testa_pal() // Vai verificar a quantidade de acertos do palpites
 {
     char certos[6] = {' ', ' ', ' ', ' ', ' ', '\0'}; // Inicializar os possíveis acertos da rodada (importante para ter índices futuros)
-    //char erros[6] = {' ', ' ', ' ', ' ', ' ', '\0'};  // Inicializar os possíveis erros da rodada (importante para ter índices futuros)
-    int cont;
+    // char erros[6] = {' ', ' ', ' ', ' ', ' ', '\0'};  // Inicializar os possíveis erros da rodada (importante para ter índices futuros)
+    int cont, cont2, acertosRodada = 0;
     // Fazer verificação letra por letra
     for (int i = 0; i < 5; i++)
     {
@@ -266,29 +284,41 @@ void testa_pal() // Vai verificar a quantidade de acertos do palpite
             {
                 // Verificar se a letra já foi computada
                 cont = 0;
+                cont2 = 0;
                 for (int k = 0; k < 5; k++)
                 {
                     if (letras[k] == tentativa[i]) // Letra já computada
-                    {
                         cont++;
-                        break;
-                    }
+                    if (certos[k] == tentativa[i]) // Letra já computada
+                        cont2++;
                 }
                 if (cont == 0)
                 {
-                    letras[i] = tentativa[i];
+                    for (int k = 0; k < 5; k++) // Salvar em ordem de acerto
+                    {
+                        if (letras[k] == ' ')
+                        {
+                            letras[k] = tentativa[i];
+                            break;
+                        }
+                    }
                     acertos++;
-                    printf("\nVocê acertou a letra %c da palavra %s", tentativa[i], palavra); // Aqui podia colocar uma corzinha marota
+                    // printf("\nVocê acertou a letra %c da palavra %s!", tentativa[i], palavra); // Aqui podia colocar uma corzinha marota
+                    printf("\nVocê acertou a letra %c", tentativa[i]);
                 }
-                certos[i] = tentativa[i];
+                if (cont2 == 0)
+                {
+                    acertosRodada++; // Se, na tentativa, houver letras repetidas, acertos de palavras repetidas só computará uma vez
+                    certos[i] = tentativa[i];
+                }
             }
         }
     }
     // Pode ser interresante, no futuro, calcular as letras erradas
-    printf("\nCertos: %s \n", certos);
-    printf("Letras: %s \n", letras);
-    // Vai salvar os erros da rodada no arquivo backup
-    // Vai salvar os acertos da rodada no arquivo backup
-    salvaInt_jogo(acertos); // Quantidade de acertos
-    salvaChar_jogo(certos); // Letras acertadas
+    printf("\nLetras acertadas na rodada: %s \n", certos);
+    printf("Letras acertadas no jogo: %s \n", letras);
+    printf("Acertos rodada: %d\n", acertosRodada);
+    // Vai salvar os acertos (e a sua quantidade) da rodada no arquivo backup.txt
+    salvaInt_jogo(acertosRodada); // Quantidade de acertos da rodada
+    salvaChar_jogo(certos);       // Letras acertadas
 }
