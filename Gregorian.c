@@ -435,7 +435,7 @@ void pega_pal() // Vai pegar a tentativa do usuário e, verificar se ela está v
 			if (strpbrk(proibido, tentativa) != 0 || strlen(tentativa) != 5 || pega_erro == 1) // Condição de erros
 			{
 				pega_erro = 1;
-				printf("\t\t\t      Detectada uma palavra inválida, tente novamente.\n");
+				printf("\n\t\t\t      Detectada uma palavra inválida, tente novamente.\n\n");
 			}
 		}
 		else
