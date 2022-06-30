@@ -262,7 +262,7 @@ void sorteia_pal() // Vai sortear uma palavra aleatória da lista
 		}
 		flag = 1;
 		srand(time(NULL));
-		linha = rand() % 783; // 783 é a quantidade de linhas no arquivo lista.txt
+		linha = rand() % 784 + 1; // 784 é a quantidade de linhas no arquivo lista.txt
 		for (int i = 0; i <= linha; i++)
 		{
 			fscanf(lista, "%s", palavra);
@@ -548,7 +548,7 @@ void testa_pal() // Vai verificar a quantidade de acertos do palpites
 			}
 		}
 	}
-	printf("\n\t\t\t\t\t Letras acertadas no jogo\n\t\t\t\t\t\t    ", letras);
+	printf("\n\t\t\t\t\t Letras acertadas no jogo\n\t\t\t\t\t\t    ");
 	for (int i = 0; i < 5; i++)
 	{
 		printf("%c  ", letras[i]);
@@ -582,7 +582,7 @@ void recupera_jogo(int *rod) // Recupera a palavra-respota e o valor da última 
 	arq = fopen("backup.txt", "r");
 	if (arq)
 	{
-		fscanf(arq, "%s", &palavra); // Palavra-resposta
+		fscanf(arq, "%s", palavra); // Palavra-resposta
 		fseek(arq, -5, SEEK_END);
 		fscanf(arq, "%d", rod); // Última rodada
 		fclose(arq);
