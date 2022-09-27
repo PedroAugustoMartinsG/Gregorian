@@ -9,7 +9,7 @@ Lucas Loureiro Rodrigues
 
 Pedro Guilherme Tolvo
 
-Pedro Martins Gagini
+Pedro Augusto Martins Gagini
 
 Pedro Henrique Salmaze 
 
